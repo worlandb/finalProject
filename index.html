@@ -1,0 +1,111 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Top Movie Tickets</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src ="http://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+  <div id="vueApp">
+<!--     <cardview id = "c1" image = "" title = 'Movie 1' text = 'Description of Movie 1'></cardview>
+    <cardview id = "c2" image = "" title = 'Movie 2' text = 'Description of Movie 2'></cardview>
+    <cardview id = "c3" image = "" title = 'Movie 3' text = 'Description of Movie 3'></cardview> -->
+  </div>
+
+
+
+  <script>
+      //------------Beginning of AJAX and Jquery-------------//
+
+      //MoveDB API Key = 1ffdd6733bf161b583036b78a699b120
+      var http = new XMLHttpRequest();
+      var url='';
+      var jsonObj ='';
+      var numMovies = '3';
+      var i = '';
+      var card
+      $("#vueApp").add(card);
+      $( document ).ready(function() {
+          url = "https://api.themoviedb.org/3/movie/now_playing?page=1&language=en-US&api_key=1ffdd6733bf161b583036b78a699b120"
+          http.open("GET", url);
+          http.send();
+          http.onreadystatechange=(e)=>
+          {
+
+              if (http.readyState == 4 && http.status == 200)//this is the final important readyState)
+              {
+
+                      jsonObj = JSON.parse(http.responseText);
+                          //-----------Beginning of Vue-------------//
+
+                            // Vue to set up cardviews and template for said cardviews (template is from Bootstrap)
+                            Vue.component('cardview', {  //cant use capital letters in ' ' area
+                                props: ['name', 'image', 'title', 'text'],  //used to define/differentiate bettween cards
+
+                                template: ` <div class="card" style="width: 18rem;">
+                                                <img v-bind:src="image" class="card-img-top" alt="...">
+                                                <div class="card-body">
+                                                    <button>Child Ticket</button>
+                                                    <button>Adult Ticket</button>
+                                                    <h5 class="card-title">{{title}}</h5>
+                                                    <p class="card-text">{{text}}</p>
+                                                </div>
+                                            </div>`  // use the `` backticks here
+
+
+                                })
+
+
+                            
+
+                            var app = new Vue({
+                            el: "#vueApp",
+                            data: {
+
+                                }
+
+                            }) 
+                        //------------end of vue-------------//
+
+                        for (i = 0; i < numMovies; i++) {
+                            //var movieInfo = $("#" + i).text(jsonObj.results[i].original_title);
+                            var movieTitle = jsonObj.results[i].original_title;
+                            var movieDescr = jsonObj.results[i].overview;
+                            var movieImg = jsonObj.results[i].poster_path;  
+
+                            var card = `<div class="card" style="width: 18rem;">
+                                            <img id="" v-bind:src="" class="card-img-top" alt="...">
+                                                <div class="card-body">
+                                                    <button>Child Ticket</button>
+                                                    <button>Adult Ticket</button>
+                                                    <h5 class="card-title">`+ movieTitle + `</h5>
+                                                    <p class="card-text">` + movieDescr + `</p>
+                                                </div>
+                                            </div>`;
+
+                            $(card).appendTo("body");
+
+                        }
+                        //poster_path = jpg
+                      console.log(jsonObj)
+
+                      
+              }
+          }
+      });
+
+      
+      //------------End of AJAX and Jquery-------------//
+  </script>
+</body>
+</html>
